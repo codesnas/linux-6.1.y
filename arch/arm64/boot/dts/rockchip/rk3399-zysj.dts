@@ -1016,8 +1016,6 @@
 	sd-uhs-sdr104;
 	#address-cells = <1>;
 	#size-cells = <0>;
-	// status = "okay";
-	status = "disabled";
 
 	brcmf: wifi@1 {
 		reg = <1>;
@@ -1027,7 +1025,6 @@
 		interrupt-names = "host-wake";
 		pinctrl-names = "default";
 		pinctrl-0 = <&wifi_host_wake_l>;
-		status = "disabled";
 	};
 };
 
