@@ -11,6 +11,8 @@
 	compatible = "x96-max-a100", "amlogic,sm1";
 	model = "X96 MAX+ A100";
 
+	/delete-node/ memory@0;
+
 	memory@0 {
 		device_type = "memory";
 		// reg = <0x0 0x0 0x0 0x40000000>;
