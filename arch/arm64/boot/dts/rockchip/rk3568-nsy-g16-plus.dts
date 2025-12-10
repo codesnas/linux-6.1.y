@@ -725,27 +725,81 @@
 		status = "okay";
 };
 
+/*使用DSA驱动模型*/
 &mdio0 {
-	status = "okay";
+	#address-cells = <1>;
+    #size-cells = <0>;
+
+	rtl8367s: switch@29 {
+			compatible = "realtek,rtl8365mb";
+			reg = <29>;
+
+			reset-gpios = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
+			pinctrl-names = "default";
+			reset-assert-us = <20000>;
+			reset-deassert-us = <100000>;
+			pinctrl-0 = <&gmac0_reset>;
+
+			ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					port@0 {
+							reg = <0>;
+							label = "wan";
+					};
+
+					port@1 {
+							reg = <1>;
+							label = "lan1";
+					};
+
+					port@2 {
+							reg = <2>;
+							label = "lan2";
+					};
+
+					port@3 {
+							reg = <3>;
+							label = "lan3";
+					};
+
+					port@7 {
+							reg = <7>;
+							ethernet = <&gmac0>;
+							phy-mode = "rgmii";
+							tx-internal-delay-ps = <0>;
+							rx-internal-delay-ps = <0>;
+
+							fixed-link {
+									speed = <1000>;
+									full-duplex;
+							};
+					};
+
+			};
+	};
 };
 
 &gmac0 {
 	status = "okay";
 	phy-mode = "rgmii";
-	snps,reset-gpio = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
-	snps,reset-active-low;
-	snps,reset-delays-us = <0 20000 100000>;
-	assigned-clocks = <&cru SCLK_GMAC0_RX_TX &cru SCLK_GMAC0>;
-	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED>;
-	assigned-clock-rates = <0 125000000>;
-	tx_delay = <0x3f>;
-	rx_delay = <0x2c>;
 	clock_in_out = "output";
+	// reset gpio 写到交换机配置里面
+	//snps,reset-gpio = <&gpio1 RK_PB0 GPIO_ACTIVE_LOW>;
+	//snps,reset-active-low;
+	//snps,reset-delays-us = <0x0 20000 100000>;
+	assigned-clocks = <&cru SCLK_GMAC0_RX_TX &cru SCLK_GMAC0>;
+	assigned-clock-parents = <&cru SCLK_GMAC0_RGMII_SPEED &cru CLK_MAC0_2TOP>;
+	assigned-clock-rates = <0x0 125000000>;
+	tx_delay = <0x3c>;
+	rx_delay = <0x2f>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&gmac0_miim &gmac0_tx_bus2 &gmac0_rx_bus2 &gmac0_rgmii_clk &gmac0_rgmii_bus>;
+	pinctrl-0 = <&gmac0_miim &gmac0_tx_bus2 &gmac0_rx_bus2 &gmac0_rgmii_clk &gmac0_rgmii_bus /*&gmac0_reset*/>;
 	fixed-link {
 		speed = <1000>;
 		full-duplex;
+		pause;
 	};
 };
 
